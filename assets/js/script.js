@@ -14,6 +14,8 @@ const profilePhotoInput = document.getElementById("profilePhoto");
 const signaturePhotoInput = document.getElementById("signaturePhoto");
 const profilePhotoPreview = document.getElementById("profilePhotoPreview");
 const signaturePhotoPreview = document.getElementById("signaturePhotoPreview");
+const appTitle = document.querySelector(".app-title");
+const userButton = document.querySelector(".user-button");
 
 function openMenu() {
   sideMenu.classList.add("active");
@@ -50,6 +52,10 @@ function maskName(value) {
     .split(" ")
     .map((word) => word.charAt(0) + "*".repeat(Math.max(word.length - 1, 0)))
     .join(" ");
+}
+
+function getFirstName(value) {
+  return (value || "").trim().replace(/\s+/g, " ").split(" ")[0] || "";
 }
 
 function onlyDigits(value) {
@@ -211,8 +217,20 @@ function fillProfileForm(userData) {
 
 // Atualiza o perfil no side-menu com os dados salvos
 function updateSideMenuProfile(userData) {
-  sideMenuName.textContent = userData.fullName || userData.nome || "sem nome";
+  const fullName = userData.fullName || userData.nome || "";
+  const firstName = getFirstName(fullName);
+
+  sideMenuName.textContent = fullName || "sem nome";
   sideMenuDocument.textContent = userData.cpf || "000.005.437-00";
+
+  if (appTitle && firstName) {
+    appTitle.textContent = firstName.toUpperCase();
+  }
+
+  if (userButton && firstName) {
+    userButton.textContent = firstName.charAt(0).toUpperCase();
+    userButton.setAttribute("aria-label", `Perfil de ${firstName}`);
+  }
 }
 
 // Verifica se é a primeira vez que o usuário acessa
