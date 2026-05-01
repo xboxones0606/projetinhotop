@@ -1,0 +1,1549 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#021f59" />
+    <title>Habilitação – CNH Digital</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./assets/icons/icon-192.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://googleapis.com" rel="stylesheet">
+
+    <style>
+      @font-face {
+        font-family: "OCRBLocal";
+        src:
+          url("./assets/fonts/font/OCR-B.ttf") format("truetype"),
+          url("./assets/fonts/font/OCR-B.otf") format("opentype");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      img,
+      a {
+        -webkit-user-drag: none;
+        user-drag: none;
+      }
+      :root {
+        --navy: #021f59;
+        --gold: #c9a227;
+        --red: #c0392b;
+        --green-bg: #e8ede8;
+        --black: #111;
+        --white: #fff;
+        --gray-bg: #f2f4f7;
+        --gray-border: #dde1e9;
+        --link: #2563eb;
+        --blue-text: #1b4fa8;
+        --cnh-ocr-font: "OCRBLocal", monospace;
+      }
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #e8ebf0;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+      .phone {
+        width: 100%;
+        max-width: 24.375rem;
+        min-height: 100vh;
+        background: var(--gray-bg);
+        display: flex;
+        flex-direction: column;
+        padding-top: 74px;
+      }
+
+      /* STATUS */
+      .status-bar {
+        background: var(--navy);
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px clamp(14px, 5vw, 20px) 6px;
+        font-size: clamp(12px, 3.8vw, 15px);
+        font-weight: 700;
+      }
+      .status-icons {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        color: #fff;
+      }
+
+      /* HEADER */
+      .header {
+        background: var(--navy);
+        position: fixed;
+        top: 0;
+        left: 50%;
+        width: 100%;
+        max-width: 24.375rem;
+        transform: translateX(-50%);
+        z-index: 50;
+        padding: 6px clamp(14px, 5vw, 18px) 14px;
+        display: flex;
+        align-items: center;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-bottom:  3px solid #0a1b4a;
+        gap: clamp(10px, 4vw, 14px);
+      }
+      .back-btn {
+        margin-top: 16px;
+        width: clamp(34px, 10vw, 38px);
+        height: clamp(34px, 10vw, 38px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.22);
+      }
+      .back-btn svg {
+        color: #fff;
+      }
+      .header-info h1 {
+         margin-top: 16px;
+        color: white;
+        font-size: clamp(16px, 5.2vw, 20px);
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .header-info p {
+        /* font-family: var(--cnh-ocr-font); */
+        color: rgba(224, 224, 224, 0.8);
+        font-size: 13px;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* QR NOTICE */
+      .qr-notice {
+        padding: 22px 2px 10px 2px;
+        font-size: clamp(11px, 3.8vw, 14px);
+        font-weight: 700;
+        color: #0d1b5e;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .qr-notice a {
+        color: #2563eb;
+        text-decoration: underline;
+      }
+
+      /* SLIDER */
+      .slider-outer {
+        margin: 14px clamp(8px, 4vw, 14px) 0;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 14px rgba(0, 0, 0, 0.1);
+        background: white;
+        user-select: none;
+        touch-action: pan-y;
+      }
+      .slider-track {
+        display: flex;
+        gap: clamp(10px, 4vw, 16px);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
+        cursor: grab;
+      }
+      .slider-track:active {
+        cursor: grabbing;
+      }
+
+      /* SLIDE BASE */
+      .slide {
+        min-width: 100%;
+        background: var(--green-bg);
+        border: 1px solid #c5ccb8;
+        display: flex;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+        
+      }
+
+      /* LEFT SIDEBAR */
+      .cnh-sidebar-left {
+        width: 48px;
+        background: var(--black);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 4px;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .seal {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid #e8c84a;
+        background: radial-gradient(circle, #d4a820 0%, #7a5e10 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .sidebar-text {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        color: white;
+        font-size: 6.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        text-align: center;
+        line-height: 1.3;
+        flex: 1;
+      }
+      .br-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--gold);
+        border: 3px solid #e8c84a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 900;
+        color: var(--black);
+        letter-spacing: -1px;
+        margin-top: auto;
+      }
+
+      /* RIGHT STRIP */
+      .cnh-strip-right {
+        width: 30px;
+        background: var(--black);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .strip-title {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        color: white;
+        font-size: 6px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-align: center;
+        line-height: 1.3;
+        padding: 6px 0;
+      }
+
+      /* SLIDE 1 MAIN */
+      .cnh-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 7px 7px;
+        min-width: 0;
+      }
+      .map-icon {
+        position: absolute;
+        top: 6px;
+        right: 34px;
+        opacity: 0.75;
+      }
+      .top-label {
+        font-size: 7.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 3px;
+        color: #222;
+      }
+      .slide {
+        width: 100%;
+        aspect-ratio: 1030 / 1458;
+        height: auto;
+      }
+      .cnh{
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1030 / 1458;
+        height: auto;
+        background: #f2f4f7;
+      }
+      .cnh-number {
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        color: var(--black);
+        margin-bottom: 6px;
+      }
+      .photo-sig-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .photo-box {
+        width: 90px;
+        height: 108px;
+        border: 1px solid #999;
+        flex-shrink: 0;
+        overflow: hidden;
+        background: #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .photo-box svg {
+        width: 55px;
+        height: 55px;
+        fill: #888;
+      }
+      .sig-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        flex: 1;
+        padding-bottom: 2px;
+      }
+      .sig-lbl {
+        font-size: 6px;
+        color: #555;
+        margin-bottom: 2px;
+      }
+      .sig-val {
+        font-family: "Brush Script MT", cursive;
+        font-size: 14px;
+        color: #222;
+      }
+      .sig-line {
+        height: 1px;
+        background: #888;
+        margin-top: 3px;
+      }
+      .name-lbl {
+        font-size: 6.5px;
+        color: #555;
+      }
+      .name-val {
+        font-size: 7.5px;
+        font-weight: 700;
+        color: var(--black);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .divider {
+        height: 1px;
+        background: #aaa;
+        margin: 3px 0;
+      }
+      .fields-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 3px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .fl {
+        font-size: 6px;
+        color: #555;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 1px;
+      }
+      .fv {
+        font-size: 7.5px;
+        font-weight: 700;
+        color: var(--black);
+      }
+      .fv.red {
+        color: var(--red);
+      }
+      .fv.sm {
+        font-size: 6.5px;
+      }
+      .bottom-row {
+        display: flex;
+        gap: 4px;
+        align-items: flex-start;
+        margin-top: 2px;
+      }
+      .registro-box {
+        border: 1px solid #888;
+        padding: 2px 4px;
+        display: flex;
+        flex-direction: column;
+      }
+      .cat-box {
+        border: 1px solid #888;
+        padding: 2px 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .barcode-area {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .barcode-lines {
+        display: flex;
+        gap: 1px;
+        height: 22px;
+        align-items: stretch;
+      }
+      .barcode-lines span {
+        display: block;
+        background: var(--black);
+      }
+
+      /* SLIDE 2 */
+      .slide2-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 14px 10px;
+        min-width: 0;
+        justify-content: center;
+        align-items: center;
+      }
+      .slide2-info {
+        font-size: 8px;
+        text-align: center;
+        color: #333;
+        line-height: 1.8;
+      }
+
+      /* SLIDE 3 */
+      .slide3-main {
+        flex: 1;
+        padding: 12px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 6px;
+      }
+      .info-row .lbl {
+        font-size: 9px;
+        color: #555;
+      }
+      .info-row .val {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--black);
+      }
+      .info-row .val.green {
+        color: #1a7a2e;
+      }
+      .info-row .val.red {
+        color: var(--red);
+      }
+
+      /* SLIDE 4 */
+      .slide4-main {
+        flex: 1;
+        padding: 12px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .obs-title {
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--black);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .obs-line {
+        font-size: 7.5px;
+        color: #444;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        min-height: 18px;
+      }
+
+      /* DOTS */
+      .dots-row {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        padding: 13px 0 10px;
+        background: white;
+      }
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        border: 1px solid #aaa;
+        border-color: var(--navy);
+        background: #fff;
+        transition: background 0.3s;
+        cursor: pointer;
+      }
+      .dot.active {
+        background: var(--navy);
+      }
+
+      /* BUTTONS */
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin: 6px clamp(8px, 4vw, 14px) 20px;
+      }
+      .action-btn {
+        background: white;
+        border: none;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        padding: clamp(12px, 4vw, 14px) clamp(14px, 5vw, 18px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+        display: flex;
+        align-items: center;
+        gap: clamp(10px, 4vw, 14px);
+        font-size: clamp(12px, 4vw, 16px);
+        font-weight: 700;
+        color: var(--navy);
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.15s;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      .action-btn span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .action-btn:hover {
+        background: #eef1f8;
+      }
+      .action-btn.danger {
+        color: #c0392b;
+      }
+      .action-btn svg {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+      }
+
+      .action-btn img {
+        width: clamp(24px, 8vw, 30px) !important;
+        height: clamp(24px, 8vw, 30px) !important;
+        flex-shrink: 0;
+      }
+
+      .slide {
+        width: 100%;
+        border-radius: 0px;
+        border: solid 0px black;
+      }
+
+      .slide[style] {
+        min-height: auto !important;
+      }
+      
+      .cnh > img{
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .slider-track {
+        background: #00000000;
+        border-radius: 0px;
+        box-shadow: 0px 0px 0px #000;
+      }
+
+      .slider-outer {
+        background: #00000000;
+        border-radius: 0px;
+        box-shadow: 0px 0px 0px #000;
+        flex-direction: row;
+      }
+
+      .dots-row {
+        background: #00000000;
+        border-radius: 0px;
+        box-shadow: 0px 0px 0px #000;
+
+      }
+
+      .foto {
+        width: 48.90%;
+        height: 25.60%;
+        background-color: red;
+        position: absolute;
+        top: 17.6%;
+        left: 15.2%;
+      } 
+      .assinatura {
+        width: 8.98%;
+        height: 25.19%;
+        background-color: red;
+        position: absolute;
+        top: 17.7%;
+        left: 5.2%;
+      }
+      .nome {
+        width: 3.85%;
+        height: 61.63%;
+        background-color: red;
+        position: absolute;
+        top: 17.6%;
+        left: 68%;
+      } 
+      .codigo-slide-1{
+        width: 31.5%;
+        height: 4.2%;
+        background-color: transparent;
+        position: absolute;
+        top: 8.0%;
+        left: 5.7%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+      }
+      .data1 {
+        width: 3.85%;
+        height: 15.5%;
+        background-color: red;
+        position: absolute;
+        top: 81.4%;
+        left: 68%;
+      } 
+      .data_nasc {
+        width: 3.85%;
+        height: 39.73%;
+        background-color: red;
+        position: absolute;
+        top: 45.8%;
+        left: 59.8%;
+      } 
+      .data_emissao {
+        width: 3.85%;
+        height: 15.89%;
+        background-color: red;
+        position: absolute;
+        top: 45.8%;
+        left: 51.7%;
+      }
+      .rg {
+        width: 3.85%;
+        height: 39.73%;
+        background-color: red;
+        position: absolute;
+        top: 45.8%;
+        left: 43.5%;
+      } 
+      .validade {
+        width: 3.85%;
+        height: 15.31%;
+        background-color: red;
+        position: absolute;
+        top: 63.8%;
+        left: 51.7%;
+      }
+      .nacionalidade {
+        width: 3.85%;
+        height: 29.07%;
+        background-color: red;
+        position: absolute;
+        top: 45.8%;
+        left: 27.3%;
+      }
+      .cpf {
+        width: 3.85%;
+        height: 15.89%;
+        background-color: red;
+        position: absolute;
+        top: 45.8%;
+        left: 35.4%;
+      }
+      .numero_registro {
+        width: 3.85%;
+        height: 15.89%;
+        background-color: red;
+        position: absolute;
+        top: 65.8%;
+        left: 35.4%;
+      }
+      .cat_hab{
+        width: 3.85%;
+        height: 12.21%;
+        background-color: red;
+        position: absolute;
+        top: 84.8%;
+        left: 35.4%;
+      }
+      .filiacao-1{
+        width: 3.85%;
+        height: 50.39%;
+        background-color: red;
+        position: absolute;
+        top: 45.8%;
+        left: 17.2%;
+      }
+      .mrz{
+        width: 19.85%;
+        height: 62.39%;
+        background-color: #eaf7ee00;
+        position: absolute;
+        top: 18.6%;
+        left: 24%;
+      }
+      .mrz p {
+        font-family: var(--cnh-ocr-font);
+        position: absolute;
+        top: 0;
+        left: 85%;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 0;
+        padding-left: clamp(3px, 0.9vw, 5px);
+        color: #000000;
+        font-size: clamp(12px, 1.65vw, 6px);
+        font-weight: 600;
+        line-height: 2.2;
+        letter-spacing: 0.15px;
+        white-space: pre;
+        text-transform: uppercase;
+        transform: rotate(90deg);
+        transform-origin: left top;
+      }
+      .filiacao-2{
+        width: 3.85%;
+        height: 50.39%;
+        background-color: red;
+        position: absolute;
+        top: 45.8%;
+        left: 8.5%;
+      }
+      .slide-2-data{
+        width: 3.85%;
+        height: 9.39%;
+        background-color: transparent;
+        position: absolute;
+        top: 39.8%;
+        left: 76.0%;
+      }
+      .cnh-data-field {
+        background-color: transparent;
+        color: #111;
+        display: block;
+        overflow: visible;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      .cnh-data-field p {
+        font-family: var(--cnh-ocr-font);
+        position: absolute;
+        top: 0;
+        left: 85%;
+        margin: 0;
+        padding-left: clamp(3px, 0.9vw, 5px);
+        color: #000000;
+        font-size: clamp(6px, 2vw, 7px);
+        font-weight: 600;
+        line-height: 1;
+        white-space: nowrap;
+        text-transform: uppercase;
+        transform: rotate(90deg);
+        transform-origin: left top;
+      }
+
+      .slide-2-data p {
+        font-size: clamp(4px, 1.5vw, 5px);
+        font-weight: 400;
+      }
+
+      .cnh-comma {
+        font-weight: 400;
+      }
+
+      .numero_registro p,
+      .validade p,
+      .cat_hab p {
+        color: var(--red);
+      }
+
+      .codigo-slide-1 p {
+        font-family: var(--cnh-ocr-font);
+        width: 100%;
+        height: auto;
+        color: #111;
+        font-size: clamp(10px, 3vw, 15px);
+        font-weight: 600;
+        line-height: 1;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      .foto,
+      .assinatura {
+        background-color: transparent;
+        overflow: hidden;
+        z-index: 2;
+        position: absolute;
+      }
+
+      .foto img,
+      .assinatura img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        object-fit: contain;
+        display: block;
+        transform: translate(-50%, -50%) rotate(90deg);
+        transform-origin: center;
+      }
+
+      .foto img {
+        width: 100%;
+        height: auto;
+      }
+
+      .assinatura img {
+        width: calc(25.19 / 8.98 * 100%);
+        height: calc(8.98 / 25.19 * 100%);
+        object-fit: cover;
+        transform: translate(-50%, -50%) rotate(90deg);
+      }
+
+      .slide-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        background: rgba(0, 0, 0, 0.82);
+      }
+
+      .slide-modal.open {
+        display: flex;
+      }
+
+      .slide-modal-content {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 0 18px;
+        background: rgba(255, 255, 255, 0.7);
+      }
+
+      .slide-modal-frame {
+        width: calc(100vw - 32px);
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        touch-action: none;
+      }
+
+      .slide-modal-frame .cnh {
+        width: min(100%, calc((100vh - 82px) * 1030 / 1458));
+        height: auto;
+        max-height: calc(100vh - 82px);
+        pointer-events: none;
+        transform: translate(var(--zoom-x, 0px), var(--zoom-y, 0px)) scale(var(--zoom-scale, 1));
+        transform-origin: center;
+        will-change: transform;
+      }
+
+      .slide-modal-frame .cnh > img {
+        object-fit: contain;
+      }
+
+      .slide-modal-close {
+        border: none;
+        border-radius: 999px;
+        background: var(--navy);
+        color: #fff;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 11px 32px;
+        cursor: pointer;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="phone">
+      
+
+      <div class="header">
+        <div class="back-btn" onclick="goBackToCondutor()">
+          <svg
+            width="10"
+            height="16"
+            viewBox="0 0 10 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8.5 1.5L2 8l6.5 6.5"
+              stroke="white"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        <div class="header-info">
+          <h1>HABILITAÇÃO</h1>
+          <p class="timer">Atualizando...</p>
+        </div>
+      </div>
+
+      <div class="qr-notice">
+        Verifique autenticidade do QR Code com o app <a href="#">Vio</a>
+      </div>
+
+      <div class="slider-outer" id="sliderOuter">
+        <div class="slider-track" id="sliderTrack">
+          <!-- ══ SLIDE 1 – Frente ══ -->
+          <div class="slide">
+            <div class="cnh">
+              <div class="foto">
+                  <img src="" alt="">
+              </div>
+              <div class="assinatura">
+                  <img src="" alt="">
+              </div>  
+              <div class="codigo-slide-1"><p></p></div>
+              <div class="nome cnh-data-field"><p></p></div>
+              <div class="data1 cnh-data-field"><p></p></div>
+              <div class="data_nasc cnh-data-field"><p></p></div>
+              <div class="data_emissao cnh-data-field"><p></p></div>
+              <div class="rg cnh-data-field"><p></p></div>
+              <div class="validade cnh-data-field"><p></p></div>
+              <div class="nacionalidade cnh-data-field"><p></p></div>
+              <div class="cpf cnh-data-field"><p></p></div>
+              <div class="numero_registro cnh-data-field"><p></p></div>
+              <div class="filiacao-1 cnh-data-field"><p></p></div>
+              <div class="cat_hab cnh-data-field"><p></p></div>
+              <div class="filiacao-2 cnh-data-field"><p></p></div>
+              <img src="./assets/img/doc.png" alt="" />
+            </div>
+          </div>
+
+          <!-- ══ SLIDE 2 – QR Code ══ -->
+          <div class="slide">
+            <div class="cnh">
+              <div class="codigo-slide-1"><p></p></div>
+              <div class="slide-2-data cnh-data-field"><p></p></div>
+              <div class="slide-2-local cnh-data-field"><p></p></div>
+              <img src="./assets/img/doc2.png" alt="" />
+            </div>
+          </div>
+
+          <!-- ══ SLIDE 3 – Pontuação ══ -->
+          <div class="slide">
+            <div class="cnh">
+              <div class="mrz"><p></p></div>
+
+              <img src="./assets/img/doc3.png" alt="" />
+            </div>
+          </div>
+
+          <!-- ══ SLIDE 4 – Observações ══ -->
+          <div class="slide">
+            <div class="cnh">
+              <img src="./assets/img/qrcode.png" alt="" />
+            </div>
+          </div>
+          
+        </div>
+        <!-- /slider-track -->
+
+        <!-- Dots -->
+        <div class="dots-row" id="dotsRow">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+      <!-- /slider-outer -->
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button class="action-btn">
+          <img 
+                src="./assets/img/habilitacao.svg"
+                alt="Habilitação"
+                style="width: 30px; height: 30px; stroke:#0d1b5e;"
+              />
+          <span style="font-family: Poppins;">Histórico de emissões da CNH</span>
+        </button>
+        <button class="action-btn">
+         <img 
+                src="./assets/img/exportar.svg"
+                alt="Habilitação"
+                style="width: 30px; height: 30px; stroke:#0d1b5e;"
+              />
+          <span style="font-family: Poppins;">Exportar</span>
+        </button>
+        <button class="action-btn">
+          <img 
+                src="./assets/img/lixo.svg"
+                alt="Habilitação"
+                style="width: 30px; height: 30px; stroke:#0d1b5e;"
+              />
+          <span style="font-family: Poppins;">Remover</span>
+        </button>
+        <button class="action-btn">
+          <img 
+                src="./assets/img/copiar_1.svg"
+                alt="Habilitação"
+                style="width: 30px; height: 30px; stroke:#0d1b5e;"
+              />
+          <span style="font-family: Poppins;">Copiar QR Code</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="slide-modal" id="slideModal" aria-hidden="true">
+      <div class="slide-modal-content" role="dialog" aria-modal="true">
+        <div class="slide-modal-frame" id="slideModalFrame"></div>
+        <button class="slide-modal-close" id="slideModalClose" type="button">
+          Fechar
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function goBackToCondutor() {
+        if (window.history.length > 1) {
+          window.history.back();
+          return;
+        }
+
+        window.location.href = "./condutor.html";
+      }
+
+      document.addEventListener("dragstart", function(e) {
+        e.preventDefault();
+      });
+
+      function formatDateBr(value) {
+        if (!value) return "";
+        const parts = value.split("-");
+        if (parts.length !== 3) return value;
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+
+      function addYearsToDateBr(value, years) {
+        if (!value) return "";
+        const date = new Date(`${value}T00:00:00`);
+        if (Number.isNaN(date.getTime())) return "";
+        date.setFullYear(date.getFullYear() + years);
+        return date.toLocaleDateString("pt-BR");
+      }
+
+      function setCnhText(selector, value) {
+        document.querySelectorAll(selector).forEach((field) => {
+          const text = field.querySelector("p");
+          if (text) {
+            text.textContent = value || "";
+          }
+        });
+      }
+
+      function escapeHtml(value) {
+        return String(value || "").replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[char]);
+      }
+
+      function setCnhHtml(selector, value) {
+        const field = document.querySelector(selector);
+        const text = field ? field.querySelector("p") : null;
+        if (text) {
+          text.innerHTML = value || "";
+        }
+      }
+
+      function formatBirthPlace(data) {
+        const birthDate = escapeHtml(formatDateBr(data.birthDate));
+        const city = escapeHtml(data.city);
+        const state = escapeHtml(data.state);
+
+        if (birthDate && city && state) {
+          return `${birthDate}<span class="cnh-comma">,</span>${city}<span class="cnh-comma">, </span>${state}`;
+        }
+
+        if (birthDate && city) {
+          return `${birthDate}<span class="cnh-comma">,</span>${city}`;
+        }
+
+        if (city && state) {
+          return `${city}<span class="cnh-comma">, </span>${state}`;
+        }
+
+        return birthDate || city || state;
+      }
+
+      function formatRgIssuer(data) {
+        return [data.rg, data.issuer, data.state]
+          .filter(Boolean)
+          .map((value) => String(value).trim().toUpperCase())
+          .filter(Boolean)
+          .join(" ");
+      }
+
+      function stripDiacritics(value) {
+        return String(value || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+      }
+
+      function normalizeMrzText(value) {
+        return stripDiacritics(value)
+          .toUpperCase()
+          .replace(/[^A-Z0-9\s]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function padMrzLine(value, size = 30) {
+        return String(value || "").slice(0, size).padEnd(size, "<");
+      }
+
+      function formatMrzDate(value) {
+        if (!value) return "<<<<<<";
+
+        const parts = String(value).split("-");
+        if (parts.length !== 3) return "<<<<<<";
+
+        const [year, month, day] = parts;
+        return `${year.slice(-2)}${month}${day}`;
+      }
+
+      function addYearsToIsoDate(value, years) {
+        if (!value) return "";
+
+        const date = new Date(`${value}T00:00:00`);
+        if (Number.isNaN(date.getTime())) return "";
+
+        date.setFullYear(date.getFullYear() + years);
+        const year = String(date.getFullYear());
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      function getMrzCharValue(char) {
+        if (char === "<") return 0;
+        if (/\d/.test(char)) return Number(char);
+        if (/[A-Z]/.test(char)) return char.charCodeAt(0) - 55;
+        return 0;
+      }
+
+      function getMrzCheckDigit(value) {
+        const weights = [7, 3, 1];
+
+        return String(
+          String(value || "")
+            .split("")
+            .reduce(
+              (total, char, index) =>
+                total + getMrzCharValue(char) * weights[index % weights.length],
+              0,
+            ) % 10,
+        );
+      }
+
+      function formatMrzSex(value) {
+        const normalizedValue = normalizeMrzText(value);
+
+        if (normalizedValue === "MASCULINO") return "M";
+        if (normalizedValue === "FEMININO") return "F";
+        return "<";
+      }
+
+      function formatMrzName(value) {
+        const words = normalizeMrzText(value).split(" ").filter(Boolean);
+        if (!words.length) return "";
+        if (words.length === 1) return words[0];
+        return `${words[0]}<<${words.slice(1).join("<")}`;
+      }
+
+      function buildMrz(data, numeroRegistro) {
+        const registrationDigits = String(numeroRegistro || "").replace(/\D/g, "");
+        const registrationMain = registrationDigits.slice(0, 9).padEnd(9, "<");
+        const registrationSuffix = registrationDigits.slice(9, 12).padEnd(3, "<");
+        const birthDate = formatMrzDate(data.birthDate);
+        const validityDate = formatMrzDate(addYearsToIsoDate(data.licenseDate, 1));
+        const birthCheckDigit = getMrzCheckDigit(birthDate);
+        const validityCheckDigit = getMrzCheckDigit(validityDate);
+        const sex = formatMrzSex(data.gender);
+        const line1 = padMrzLine(`I<BRA${registrationMain}<${registrationSuffix}`);
+        const line2Core = `${birthDate}${birthCheckDigit}${sex}${validityDate}${validityCheckDigit}BRA`;
+        const line2FinalDigit = getMrzCheckDigit(
+          `${registrationDigits}<${birthDate}${birthCheckDigit}${validityDate}${validityCheckDigit}`,
+        );
+        const line2 = `${line2Core.padEnd(29, "<")}${line2FinalDigit}`;
+        const line3 = padMrzLine(formatMrzName(data.fullName || data.nome));
+
+        return `${line1}\n${line2}\n${line3}`;
+      }
+
+      function createRegistrationNumber() {
+        const firstDigit = String(Math.floor(Math.random() * 9) + 1);
+        let remainingDigits = "";
+
+        for (let i = 0; i < 10; i += 1) {
+          remainingDigits += String(Math.floor(Math.random() * 10));
+        }
+
+        return firstDigit + remainingDigits;
+      }
+
+      function getRegistrationNumber(data) {
+        if (data.numeroRegistro) {
+          return data.numeroRegistro;
+        }
+
+        const numeroRegistro = createRegistrationNumber();
+        const updatedData = { ...data, numeroRegistro };
+        localStorage.setItem("userProfileData", JSON.stringify(updatedData));
+        return numeroRegistro;
+      }
+
+      function fillCnhData() {
+        const savedData = localStorage.getItem("userProfileData");
+        if (!savedData) return;
+
+        const data = JSON.parse(savedData);
+        const numeroRegistro = getRegistrationNumber(data);
+
+        setCnhText(".nome", data.fullName || data.nome);
+        setCnhText(".codigo-slide-1", data.codigo);
+        setCnhText(".data1", formatDateBr(data.licenseDate));
+        setCnhHtml(".data_nasc", formatBirthPlace(data));
+        setCnhText(".data_emissao", formatDateBr(data.licenseDate));
+        setCnhText(".rg", formatRgIssuer(data));
+        setCnhText(".validade", addYearsToDateBr(data.licenseDate, 1));
+        setCnhText(".slide-2-data", addYearsToDateBr(data.licenseDate, 1));
+        setCnhText(".nacionalidade", data.nationality);
+        setCnhText(".cpf", data.cpf);
+        setCnhText(".numero_registro", numeroRegistro);
+        setCnhText(".filiacao-1", data.father);
+        setCnhText(".cat_hab", "B");
+        setCnhText(".filiacao-2", data.mother);
+        setCnhText(".mrz", buildMrz(data, numeroRegistro));
+
+        const profilePhoto = document.querySelector(".foto img");
+        const signaturePhoto = document.querySelector(".assinatura img");
+        if (profilePhoto && data.profilePhoto) profilePhoto.src = data.profilePhoto;
+        if (signaturePhoto && data.signaturePhoto) signaturePhoto.src = data.signaturePhoto;
+      }
+
+      const timerElement = document.querySelector(".timer");
+      let timerUpdateTimeout;
+
+      function formatUpdateDateTime(date) {
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const seconds = String(date.getSeconds()).padStart(2, "0");
+
+        return `${day}/${month}/${year} - ${hours}:${minutes}:${seconds}`;
+      }
+
+      function updateTimerStatus() {
+        if (!timerElement) return;
+
+        timerElement.textContent = "Atualizando...";
+        clearTimeout(timerUpdateTimeout);
+
+        requestAnimationFrame(() => {
+          timerUpdateTimeout = setTimeout(() => {
+            timerElement.textContent = `Atualizado em: ${formatUpdateDateTime(new Date())}`;
+          }, 1200);
+        });
+      }
+
+      const track = document.getElementById("sliderTrack");
+      const outer = document.getElementById("sliderOuter");
+      const dots = document.querySelectorAll("#dotsRow .dot");
+      const slideModal = document.getElementById("slideModal");
+      const slideModalFrame = document.getElementById("slideModalFrame");
+      const slideModalClose = document.getElementById("slideModalClose");
+      const SLIDES = 4;
+      let current = 0,
+        startX = 0,
+        startY = 0,
+        dragging = false,
+        hasMoved = false;
+      let modalScale = 1,
+        modalX = 0,
+        modalY = 0,
+        pinchStartDistance = 0,
+        pinchStartScale = 1,
+        panStartX = 0,
+        panStartY = 0,
+        panBaseX = 0,
+        panBaseY = 0;
+
+      function goTo(idx) {
+        current = Math.max(0, Math.min(SLIDES - 1, idx));
+        track.style.transition = "transform 0.35s cubic-bezier(.4,0,.2,1)";
+        const slideWidth = outer.clientWidth;
+        const gap = parseFloat(getComputedStyle(track).gap) || 0;
+        track.style.transform = `translateX(-${current * (slideWidth + gap)}px)`;
+        dots.forEach((d, i) => d.classList.toggle("active", i === current));
+      }
+
+      function onStart(x, y) {
+        dragging = true;
+        hasMoved = false;
+        startX = x;
+        startY = y;
+      }
+      function onMove(x, y) {
+        if (!dragging) return;
+        const dx = x - startX,
+          dy = y - startY;
+        if (!hasMoved && Math.abs(dy) > Math.abs(dx)) {
+          dragging = false;
+          return;
+        }
+        if (Math.abs(dx) > 4) hasMoved = true;
+        track.style.transition = "none";
+        const slideWidth = outer.clientWidth;
+        const gap = parseFloat(getComputedStyle(track).gap) || 0;
+        track.style.transform = `translateX(${-current * (slideWidth + gap) + dx}px)`;
+      }
+      function onEnd(x) {
+        if (!dragging) return;
+        dragging = false;
+        const dx = x - startX;
+        if (Math.abs(dx) > 50) goTo(dx < 0 ? current + 1 : current - 1);
+        else goTo(current);
+      }
+
+      function openSlideModal(slideCard) {
+        if (!slideCard || !slideModal || !slideModalFrame) return;
+        slideModalFrame.replaceChildren(slideCard.cloneNode(true));
+        resetModalZoom();
+        slideModal.classList.add("open");
+        slideModal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeSlideModal() {
+        if (!slideModal || !slideModalFrame) return;
+        slideModal.classList.remove("open");
+        slideModal.setAttribute("aria-hidden", "true");
+        slideModalFrame.replaceChildren();
+        document.body.style.overflow = "";
+      }
+
+      function getModalCard() {
+        return slideModalFrame.querySelector(".cnh");
+      }
+
+      function applyModalZoom() {
+        const card = getModalCard();
+        if (!card) return;
+        card.style.setProperty("--zoom-scale", modalScale);
+        card.style.setProperty("--zoom-x", `${modalX}px`);
+        card.style.setProperty("--zoom-y", `${modalY}px`);
+      }
+
+      function resetModalZoom() {
+        modalScale = 1;
+        modalX = 0;
+        modalY = 0;
+        pinchStartDistance = 0;
+        applyModalZoom();
+      }
+
+      function getTouchDistance(touches) {
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.hypot(dx, dy);
+      }
+
+      function clampModalPan() {
+        const frameRect = slideModalFrame.getBoundingClientRect();
+        const card = getModalCard();
+        if (!card) return;
+        const cardRect = card.getBoundingClientRect();
+        const maxX = Math.max(0, (cardRect.width - frameRect.width) / 2);
+        const maxY = Math.max(0, (cardRect.height - frameRect.height) / 2);
+        modalX = Math.max(-maxX, Math.min(maxX, modalX));
+        modalY = Math.max(-maxY, Math.min(maxY, modalY));
+      }
+
+      outer.addEventListener("mousedown", (e) => onStart(e.clientX, e.clientY));
+      window.addEventListener("mousemove", (e) => onMove(e.clientX, e.clientY));
+      window.addEventListener("mouseup", (e) => onEnd(e.clientX));
+
+      outer.addEventListener(
+        "touchstart",
+        (e) => onStart(e.touches[0].clientX, e.touches[0].clientY),
+        { passive: true },
+      );
+      outer.addEventListener(
+        "touchmove",
+        (e) => {
+          onMove(e.touches[0].clientX, e.touches[0].clientY);
+          if (hasMoved) e.preventDefault();
+        },
+        { passive: false },
+      );
+      outer.addEventListener("touchend", (e) =>
+        onEnd(e.changedTouches[0].clientX),
+      );
+
+      dots.forEach((d, i) => d.addEventListener("click", () => goTo(i)));
+      document.querySelectorAll(".slide .cnh").forEach((slideCard) => {
+        slideCard.addEventListener("click", () => {
+          if (hasMoved) return;
+          openSlideModal(slideCard);
+        });
+      });
+      slideModalClose.addEventListener("click", closeSlideModal);
+      slideModal.addEventListener("click", (e) => {
+        if (e.target === slideModal) closeSlideModal();
+      });
+      slideModalFrame.addEventListener(
+        "touchstart",
+        (e) => {
+          if (e.touches.length === 2) {
+            pinchStartDistance = getTouchDistance(e.touches);
+            pinchStartScale = modalScale;
+          } else if (e.touches.length === 1) {
+            panStartX = e.touches[0].clientX;
+            panStartY = e.touches[0].clientY;
+            panBaseX = modalX;
+            panBaseY = modalY;
+          }
+        },
+        { passive: false },
+      );
+      slideModalFrame.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!slideModal.classList.contains("open")) return;
+          e.preventDefault();
+
+          if (e.touches.length === 2 && pinchStartDistance) {
+            const distance = getTouchDistance(e.touches);
+            modalScale = Math.max(
+              1,
+              Math.min(3.5, pinchStartScale * (distance / pinchStartDistance)),
+            );
+            if (modalScale === 1) {
+              modalX = 0;
+              modalY = 0;
+            }
+            clampModalPan();
+            applyModalZoom();
+            return;
+          }
+
+          if (e.touches.length === 1 && modalScale > 1) {
+            modalX = panBaseX + e.touches[0].clientX - panStartX;
+            modalY = panBaseY + e.touches[0].clientY - panStartY;
+            clampModalPan();
+            applyModalZoom();
+          }
+        },
+        { passive: false },
+      );
+      slideModalFrame.addEventListener(
+        "touchend",
+        () => {
+          if (modalScale <= 1.02) resetModalZoom();
+        },
+        { passive: true },
+      );
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeSlideModal();
+      });
+      document.addEventListener("DOMContentLoaded", () => {
+        fillCnhData();
+        updateTimerStatus();
+      });
+      window.addEventListener("pageshow", updateTimerStatus);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          updateTimerStatus();
+        }
+      });
+    </script>
+    <script src="./assets/js/pwa.js"></script>
+  </body>
+</html>

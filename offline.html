@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#021f59">
+  <title>CNH do Brasil - Offline</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #f2f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #0a1b4a;
+      text-align: center;
+    }
+
+    main {
+      width: min(100%, 22.5rem);
+      background: #fff;
+      border-radius: 18px;
+      padding: 28px 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    img {
+      width: 120px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="./assets/img/cnh-logo.png" alt="CNH do Brasil">
+    <h1>Sem conexão</h1>
+    <p>Abra novamente quando a internet voltar. As telas já acessadas continuam disponíveis offline.</p>
+  </main>
+  <script src="./assets/js/pwa.js"></script>
+</body>
+</html>

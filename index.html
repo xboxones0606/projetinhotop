@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#021f59">
+
+<title>CNH Brasil - Login</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+    -webkit-user-select:none;
+    user-select:none;
+    -webkit-touch-callout:none;
+    -webkit-tap-highlight-color:transparent;
+}
+
+img,
+a{
+    -webkit-user-drag:none;
+    user-drag:none;
+}
+
+body{
+    background:#f2f4f8;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:clamp(14px, 5vw, 20px);
+    overflow-x:hidden;
+}
+
+.login-box{
+    width:100%;
+    max-width:22.5rem;
+    background:#fff;
+    border-radius:clamp(16px, 6vw, 22px);
+    padding:clamp(22px, 8vw, 30px) clamp(18px, 6vw, 24px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:clamp(22px, 8vw, 30px);
+}
+
+.logo h1{
+    color:#0a1b4a;
+    font-size:clamp(24px, 8vw, 30px);
+    margin-bottom:6px;
+    white-space:nowrap;
+}
+
+.logo p{
+    color:#666;
+    font-size:clamp(12px, 4vw, 14px);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.input-group{
+    margin-bottom:clamp(14px, 5vw, 18px);
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:8px;
+    font-size:clamp(12px, 4vw, 14px);
+    color:#333;
+    font-weight:600;
+}
+
+.input-group input{
+    width:100%;
+    min-height:52px;
+    border:1px solid #dcdcdc;
+    border-radius:14px;
+    padding:0 14px;
+    font-size:clamp(13px, 4.2vw, 15px);
+    outline:none;
+    transition:0.2s;
+}
+
+.input-group input:focus{
+    border-color:#0a1b4a;
+}
+
+.login-btn{
+    width:100%;
+    min-height:52px;
+    border:none;
+    border-radius:14px;
+    background:#0a1b4a;
+    color:white;
+    font-size:clamp(13px, 4.4vw, 16px);
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.login-btn:hover{
+    opacity:0.92;
+}
+
+.info{
+    margin-top:18px;
+    text-align:center;
+    font-size:clamp(11px, 3.7vw, 13px);
+    color:#888;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.error{
+    color:#d30000;
+    font-size:clamp(11px, 3.7vw, 13px);
+    margin-top:12px;
+    text-align:center;
+    display:none;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+</style>
+</head>
+<body>
+
+<div class="login-box">
+
+    <div class="logo">
+        <h1>CNH Brasil</h1>
+        <p>Acesse sua carteira digital</p>
+    </div>
+
+    <div class="input-group">
+        <label>Usuário</label>
+        <input type="text" id="usuario" placeholder="Digite seu usuário">
+    </div>
+
+    <div class="input-group">
+        <label>Senha</label>
+        <input type="password" id="senha" placeholder="Digite sua senha">
+    </div>
+
+    <button class="login-btn" onclick="login()">
+        Entrar
+    </button>
+
+    <div class="error" id="error">
+        Usuário ou senha inválidos
+    </div>
+
+    <div class="info">
+        Login salvo neste dispositivo
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener("dragstart", function(e){
+    e.preventDefault();
+});
+
+if(localStorage.getItem("logado") === "true"){
+    window.location.href = "menu.html";
+}
+
+const USER_HASH = "bWFzdGVy";
+const PASS_HASH = "Y25o";
+
+function encode(value){
+    return btoa(value);
+}
+
+function login(){
+
+    const usuario = document.getElementById("usuario").value.trim();
+    const senha = document.getElementById("senha").value.trim();
+
+    const error = document.getElementById("error");
+
+    if(
+        encode(usuario) === USER_HASH &&
+        encode(senha) === PASS_HASH
+    ){
+
+        localStorage.setItem("logado", "true");
+
+        window.location.href = "menu.html";
+
+    }else{
+
+        error.style.display = "block";
+
+    }
+
+}
+
+</script>
+<script src="./assets/js/pwa.js"></script>
+
+</body>
+</html>

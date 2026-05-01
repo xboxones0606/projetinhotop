@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#021f59">
+    <title>CNH do Brasil</title>
+
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+
+<body>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Modal de Cadastro -->
+    <div class="modal" id="formModal">
+        <div class="modal-content">
+            <button class="modal-close-btn" id="closeModalButton" type="button" aria-label="Fechar modal">&times;</button>
+            <h2 class="modal-title">Complete Seu Perfil</h2>
+            <form id="profileForm" class="profile-form" novalidate>
+                <div class="form-group">
+                    <label for="fullName">Nome Completo</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="birthDate">Data de Nascimento</label>
+                    <input type="date" id="birthDate" name="birthDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="licenseDate">Data de Habilitação</label>
+                    <input type="date" id="licenseDate" name="licenseDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">Cidade</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Sexo</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Selecione o Sexo</option>
+                        <option value="MASCULINO">Masculino</option>
+                        <option value="FEMININO">Feminino</option>
+                        <option value="OUTRO">Outro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="state">UF</label>
+                    <select id="state" name="state" required>
+                        <option value="">Selecione o Estado</option>
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="cpf">CPF</label>
+                    <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="rg">RG</label>
+                    <input type="text" id="rg" name="rg" inputmode="numeric" minlength="7" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="codigo">Codigo</label>
+                    <input type="text" id="codigo" name="codigo" inputmode="numeric" minlength="10" maxlength="10" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="issuer">Órgão Emissor</label>
+                    <input type="text" id="issuer" name="issuer" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nationality">Nacionalidade</label>
+                    <input type="text" id="nationality" name="nationality" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="mother">Mãe</label>
+                    <input type="text" id="mother" name="mother" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="father">Pai</label>
+                    <input type="text" id="father" name="father" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="profilePhoto">Foto Perfil</label>
+                    <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" required>
+                    <img class="image-preview" id="profilePhotoPreview" alt="Preview da foto de perfil">
+                </div>
+
+                <div class="form-group">
+                    <label for="signaturePhoto">Foto Assinatura</label>
+                    <input type="file" id="signaturePhoto" name="signaturePhoto" accept="image/*" required>
+                    <img class="image-preview image-preview-signature" id="signaturePhotoPreview" alt="Preview da assinatura">
+                </div>
+
+                <button type="submit" class="form-submit-btn">Salvar Informações</button>
+            </form>
+        </div>
+    </div>
+
+    <aside class="side-menu" id="sideMenu">
+        <div class="side-menu-profile">
+            <img class="side-menu-logo" src="./assets/img/cnh-logo.png" alt="CNH do Brasil">
+
+            <p class="side-menu-name"></p>
+            <p class="side-menu-document"></p>
+        </div>
+
+        <nav class="side-menu-nav">
+            <div class="side-menu-section">
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/1.png" alt="">
+                    <span>Central de Mensagens</span>
+                </a>
+
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/2.png" alt="">
+                    <span>Política de Privacidade</span>
+                </a>
+
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/3.png" alt="">
+                    <span>Termo de Responsabilidade</span>
+                </a>
+
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/4.png" alt="">
+                    <span>Avaliar</span>
+                </a>
+            </div>
+            
+            <div class="side-menu-section">
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/5.png" alt="">
+                    <span id="preferencesButton">Preferências</span>
+                </a>
+                
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/6.png" alt="">
+                    <span>Tutorial</span>
+                </a>
+                
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/7.png" alt="">
+                    <span>Assistente Virtual</span>
+                </a>
+                
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/8.png" alt="">
+                    <span>Sobre a CNH do Brasil</span>
+                </a>
+            </div>
+            
+            <div class="side-menu-section">
+                <a href="#" class="side-menu-item">
+                    <img class="side-menu-icon" src="./assets/img/9.png" alt="">
+                    <span>Sair da Conta</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <header class="header">
+        <div class="header-left">
+            <button class="icon-button" id="menuButton" type="button" aria-label="Abrir menu">
+                <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 64">
+                    <path fill="currentColor" d="M5 9H72V16H5V9Z" />
+                    <path fill="currentColor" d="M5 29H72V36H5V29Z" />
+                    <path fill="currentColor" d="M5 49H72V56H5V49Z" />
+                </svg>
+            </button>
+
+            <h1 class="app-title">CNH do Brasil</h1>
+        </div>
+
+        <div class="header-right">
+            <button class="icon-button" type="button" aria-label="Notificações">
+                <svg class="bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 76 82">
+                    <path fill="currentColor" d="M38 7
+            C36.2 7 35 8.3 35 10.2
+            V12
+            C28 12.6 22.1 15.9 18.3 21.7
+            C15.6 25.8 14.8 30.8 15.1 36.8
+            C15.3 44.5 13.8 49.9 10.4 54.4
+            C8.3 57.1 8 60 9.5 61.9
+            C11.3 64 15 64 20 64
+            H56
+            C61 64 64.7 64 66.5 61.9
+            C68 60 67.7 57.1 65.6 54.4
+            C62.2 49.9 60.7 44.5 60.9 36.8
+            C61.2 30.8 60.4 25.8 57.7 21.7
+            C53.9 15.9 48 12.6 41 12
+            V10.2
+            C41 8.3 39.8 7 38 7
+            Z" />
+
+                    <path fill="currentColor" d="M30 68
+            C30.3 71.8 33.5 74 38 74
+            C42.5 74 45.7 71.8 46 68
+            Z" />
+                </svg>
+            </button>
+
+            <button class="user-button" type="button" aria-label="Perfil do usuário">
+                B
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="bt-box">
+            <a href="./condutor.html" class="bt">
+                <img src="./assets/img/bt1.png" alt="Botão 1">
+            </a>
+
+            <a href="#" class="bt">
+                <img src="./assets/img/bt2.png" alt="Botão 2">
+            </a>
+
+            <a href="#" class="bt">
+                <img src="./assets/img/bt3.png" alt="Botão 3">
+            </a>
+
+            <a href="#" class="bt">
+                <img src="./assets/img/bt4.png" alt="Botão 4">
+            </a>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <img src="./assets/img/footer.png" alt="">
+    </footer>
+    <script src="./assets/js/script.js"></script>
+    <script src="./assets/js/pwa.js"></script>
+</body>
+
+</html>
