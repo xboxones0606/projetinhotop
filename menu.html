@@ -192,7 +192,7 @@
             </div>
             
             <div class="side-menu-section">
-                <a href="#" class="side-menu-item">
+                <a href="#" class="side-menu-item" id="logoutButton">
                     <img class="side-menu-icon" src="./assets/img/9.png" alt="">
                     <span>Sair da Conta</span>
                 </a>
@@ -270,6 +270,16 @@
     <footer class="footer">
         <img src="./assets/img/footer.png" alt="">
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./assets/js/config.local.js"></script>
+    <script src="./assets/js/auth.js"></script>
+    <script>
+        window.CNHAuth.checkProtectedSession();
+        document.getElementById("logoutButton").addEventListener("click", function(e) {
+            e.preventDefault();
+            window.CNHAuth.logout();
+        });
+    </script>
     <script src="./assets/js/script.js"></script>
     <script src="./assets/js/pwa.js"></script>
 </body>
