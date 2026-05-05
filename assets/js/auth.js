@@ -32,6 +32,10 @@ function clearLocalLogin() {
   localStorage.removeItem(SESSION_ID_KEY);
 }
 
+function clearLocalDevice() {
+  localStorage.removeItem(DEVICE_ID_KEY);
+}
+
 function getSupabaseClient() {
   if (supabaseClient) {
     return supabaseClient;
@@ -93,20 +97,9 @@ async function loginWithEmailPassword(email, password) {
 async function logout() {
   const client = getSupabaseClient();
   const user = await client.auth.getUser();
-  const sessionId = getStoredSessionId();
 
-  if (user.data.user && sessionId) {
-    await client.rpc("release_single_device_session", {
-      p_device_id: getStoredDeviceId(),
-      p_session_id: sessionId,
-    });
-
-    await client
-      .from("active_sessions")
-      .delete()
-      .eq("user_id", user.data.user.id)
-      .eq("device_id", getStoredDeviceId())
-      .eq("session_id", sessionId);
+  if (user.data.user) {
+    await client.rpc("release_current_user_session");
 
     await client
       .from("usuarios")
@@ -119,6 +112,7 @@ async function logout() {
 
   clearInterval(heartbeatTimer);
   clearLocalLogin();
+  clearLocalDevice();
   await client.auth.signOut();
   window.location.href = "./index.html";
 }
