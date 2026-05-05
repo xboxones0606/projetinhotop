@@ -96,6 +96,11 @@ async function logout() {
   const sessionId = getStoredSessionId();
 
   if (user.data.user && sessionId) {
+    await client.rpc("release_single_device_session", {
+      p_device_id: getStoredDeviceId(),
+      p_session_id: sessionId,
+    });
+
     await client
       .from("active_sessions")
       .delete()
