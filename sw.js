@@ -64,11 +64,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  if (event.request.url.includes("/assets/js/config.local.js")) {
-    event.respondWith(fetch(event.request));
-    return;
-  }
-
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {

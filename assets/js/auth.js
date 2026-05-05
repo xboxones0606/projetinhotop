@@ -1,3 +1,5 @@
+const SUPABASE_URL = "https://zbasgdtlpiapmigavhhr.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_CR2j8ueH-ZmfpycvTk7Ezg_muICsOuZ";
 const DEVICE_ID_KEY = "cnh_device_id";
 const SESSION_ID_KEY = "cnh_session_id";
 const HEARTBEAT_MS = 30000;
@@ -39,16 +41,11 @@ function getSupabaseClient() {
     throw new Error("Biblioteca do Supabase nao carregada.");
   }
 
-  const config = window.CNHConfig || {};
-
-  if (!config.supabaseUrl || !config.supabaseAnonKey) {
-    throw new Error("Configure o Supabase em assets/js/config.local.js.");
+  if (!SUPABASE_ANON_KEY) {
+    throw new Error("Configure a SUPABASE_ANON_KEY em assets/js/auth.js.");
   }
 
-  supabaseClient = window.supabase.createClient(
-    config.supabaseUrl,
-    config.supabaseAnonKey
-  );
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   return supabaseClient;
 }
 
