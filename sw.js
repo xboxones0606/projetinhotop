@@ -1,4 +1,4 @@
-const CACHE_NAME = "cnh-brasil-v1";
+const CACHE_NAME = "cnh-brasil-v2";
 
 const APP_SHELL = [
   "./",
@@ -61,6 +61,11 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") {
+    return;
+  }
+
+  if (event.request.url.includes("/assets/js/config.local.js")) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
