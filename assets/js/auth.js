@@ -53,6 +53,11 @@ function getSupabaseClient() {
   return supabaseClient;
 }
 
+function isBlockedUserError(error) {
+  const errorText = `${error?.code || ""} ${error?.message || ""}`.toLowerCase();
+  return errorText.includes("user_banned") || errorText.includes("banned");
+}
+
 async function loginWithEmailPassword(email, password) {
   const client = getSupabaseClient();
   const { data, error } = await client.auth.signInWithPassword({
@@ -61,6 +66,10 @@ async function loginWithEmailPassword(email, password) {
   });
 
   if (error) {
+    if (isBlockedUserError(error)) {
+      throw new Error("Usuario bloqueado.");
+    }
+
     throw new Error("Email ou senha invalidos.");
   }
 
